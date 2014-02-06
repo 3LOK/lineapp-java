@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/com.fasterxml.jackson.csv.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/com.fasterxml.jackson.jaxb.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/com.fasterxml.jackson.smile.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/com.fasterxml.jackson.xml.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/com.fasterxml.jackson.yaml.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-annotations-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-databind-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jcl-over-slf4j-1.6.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.restlet-2.2m1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.restlet.ext.jackson-2.2m1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.restlet.ext.servlet-2.2m1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-jdk14-1.6.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/restfb-1.6.12.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>
