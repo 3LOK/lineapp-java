@@ -47,9 +47,7 @@ public class Pay {
 					Double.toString(paymentRequest.amount.doubleValue() / 100)));
 		}
 		final PayRequest payRequest = new PayRequest(PayRequest.ACTION_TYPE_PAY, request.paymentRequests.get(0).currency,
-				receiverList,
-				"https://lineapp-prod.appspot.com/paypal_success",
-				"https://lineapp-prod.appspot.com/paypal_failure",
+				receiverList, request.successUrl, request.errorUrl, 
 				new RequestEnvelope("en_US", RequestEnvelope.DETAIL_LEVEL_RETURN_ALL));
 		
 		final PayResponse payResponse;
