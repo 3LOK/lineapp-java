@@ -11,6 +11,7 @@ public class PayDetailsResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String STATUS_CREATED = "CREATED";
+	public static final String STATUS_COMPLETED = "COMPLETED";
 	
     /** Default constructor for JSON deserialization. */
     public PayDetailsResponse() {}
