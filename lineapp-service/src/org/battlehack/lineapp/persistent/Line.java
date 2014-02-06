@@ -8,32 +8,33 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.battlehack.lineapp.api.Error;
-import org.battlehack.lineapp.api.LineappException;
-import org.battlehack.lineapp.json.JsonUtils;
+import org.battlehack.lineapp.json.Json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Line {
 	public Line(org.battlehack.lineapp.api.Line line) {
-		line.id = null;
-		json = JsonUtils.toJson(line);
+		set(line);
 	}
 	
 	public org.battlehack.lineapp.api.Line get() {
 		final org.battlehack.lineapp.api.Line line =
-				JsonUtils.fromJson(json, new TypeReference<org.battlehack.lineapp.api.Line>() {});
+				Json.parse(json, new TypeReference<org.battlehack.lineapp.api.Line>() {});
 		line.id = id.toString();
 		return line;
 	}
 	
-	public static org.battlehack.lineapp.api.Line get(PersistenceManager pm, String id) throws LineappException {
+	public void set(org.battlehack.lineapp.api.Line line) {
+		line.id = null;
+		json = Json.bytify(line);
+	}
+	
+	public static Line byIdNoThrow(PersistenceManager pm, String id) {
 		try {
-			final Line persistLine = pm.getObjectById(Line.class, Long.valueOf(id));
-			return persistLine.get();
+			return pm.getObjectById(Line.class, Long.valueOf(id));
 		} catch (JDOObjectNotFoundException e) {
-			throw new LineappException(new Error(Error.ERROR_NOT_FOUND, "unknown lineId: " + id));
+			return null;
 		}
 	}
 	

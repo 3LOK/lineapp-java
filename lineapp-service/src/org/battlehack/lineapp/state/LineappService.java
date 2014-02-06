@@ -7,11 +7,11 @@ import org.battlehack.lineapp.api.Error;
 import org.battlehack.lineapp.api.Events;
 import org.battlehack.lineapp.api.ExtendRequest;
 import org.battlehack.lineapp.api.ExtendedAccessToken;
-import org.battlehack.lineapp.api.GetEventsRequest;
 import org.battlehack.lineapp.api.LineappException;
 import org.battlehack.lineapp.api.Request;
 import org.battlehack.lineapp.api.Response;
-import org.battlehack.lineapp.json.JsonUtils;
+import org.battlehack.lineapp.api.UpdateRequest;
+import org.battlehack.lineapp.json.Json;
 import org.battlehack.lineapp.persistent.PMF;
 import org.restlet.data.ClientInfo;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class LineappService {
 	
 	public static Response<?> execute(PersistenceManager pm, Request request, ClientInfo clientInfo, String fwdIpAddresses) throws LineappException {
 		LoggerFactory.getLogger(LineappService.class).info(request.getClass().getName());
-		LoggerFactory.getLogger(LineappService.class).info(JsonUtils.toJsonString(request));
+		LoggerFactory.getLogger(LineappService.class).info(Json.stringify(request));
 		
     	try {
 			if (request instanceof ExtendRequest) {
@@ -31,8 +31,8 @@ public class LineappService {
 						org.battlehack.lineapp.fb.FacebookAuthenticator.extend((ExtendRequest) request));
 			} else if (request instanceof CreateRequest) {
 				return new Response<org.battlehack.lineapp.api.Line>(Line.create(pm, (CreateRequest) request));
-			} else if (request instanceof GetEventsRequest) {
-				return new Response<Events>(Line.getEvents(pm, (GetEventsRequest) request));
+			} else if (request instanceof UpdateRequest) {
+				return new Response<Events>(Line.update(pm, (UpdateRequest) request));
 			}
 			
 			throw new LineappException(new Error(Error.ERROR_INVALID_REQUEST, "invalid request: " +
@@ -51,7 +51,7 @@ public class LineappService {
     	try {
     		return execute(pm, request, clientInfo, fwdIpAddresses);
     	} catch (LineappException e) {
-    		LoggerFactory.getLogger(LineappService.class).warn(shorten(JsonUtils.toJsonString(request), MAX_LOGGED_JSON_LENGTH), e);
+    		LoggerFactory.getLogger(LineappService.class).warn(shorten(Json.stringify(request), MAX_LOGGED_JSON_LENGTH), e);
 			return Response.fromException(e);
     	} finally {
     		pm.close();
