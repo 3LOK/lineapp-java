@@ -2,9 +2,12 @@ package org.battlehack.lineapp.state;
 
 import javax.jdo.PersistenceManager;
 
+import org.battlehack.lineapp.api.CreateRequest;
 import org.battlehack.lineapp.api.Error;
+import org.battlehack.lineapp.api.Events;
 import org.battlehack.lineapp.api.ExtendRequest;
 import org.battlehack.lineapp.api.ExtendedAccessToken;
+import org.battlehack.lineapp.api.GetEventsRequest;
 import org.battlehack.lineapp.api.LineappException;
 import org.battlehack.lineapp.api.Request;
 import org.battlehack.lineapp.api.Response;
@@ -26,6 +29,10 @@ public class LineappService {
 			if (request instanceof ExtendRequest) {
 				return new Response<ExtendedAccessToken>(
 						org.battlehack.lineapp.fb.FacebookAuthenticator.extend((ExtendRequest) request));
+			} else if (request instanceof CreateRequest) {
+				return new Response<org.battlehack.lineapp.api.Line>(Line.create(pm, (CreateRequest) request));
+			} else if (request instanceof GetEventsRequest) {
+				return new Response<Events>(Line.getEvents(pm, (GetEventsRequest) request));
 			}
 			
 			throw new LineappException(new Error(Error.ERROR_INVALID_REQUEST, "invalid request: " +

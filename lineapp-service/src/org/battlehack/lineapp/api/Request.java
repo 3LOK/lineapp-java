@@ -13,7 +13,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 	    include = JsonTypeInfo.As.PROPERTY,  
 	    property = "type")  
 @JsonSubTypes({
-	@Type(value = ExtendRequest.class, name = ExtendRequest.TYPE)
+	@Type(value = ExtendRequest.class, name = ExtendRequest.TYPE),
+	@Type(value = CreateRequest.class, name = CreateRequest.TYPE),
+	@Type(value = GetEventsRequest.class, name = GetEventsRequest.TYPE)
 })
 public abstract class Request implements Serializable {
     private static final long serialVersionUID = 1L;

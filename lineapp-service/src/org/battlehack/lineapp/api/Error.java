@@ -16,6 +16,7 @@ public class Error implements Serializable {
 	public static final String ERROR_SECURITY = "security";
 	public static final String ERROR_TIMEOUT = "timeout";
 	public static final String ERROR_NO_PERMISSION = "no_permission";
+	public static final String ERROR_NOT_FOUND = "not_found";
 	
     public Error(String code, String message) {
     	this.code = code;
