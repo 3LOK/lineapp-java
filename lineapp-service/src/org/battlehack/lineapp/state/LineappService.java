@@ -2,12 +2,14 @@ package org.battlehack.lineapp.state;
 
 import javax.jdo.PersistenceManager;
 
+import org.battlehack.lineapp.api.CreatePaymentRequest;
 import org.battlehack.lineapp.api.CreateRequest;
 import org.battlehack.lineapp.api.Error;
 import org.battlehack.lineapp.api.Events;
 import org.battlehack.lineapp.api.ExtendRequest;
 import org.battlehack.lineapp.api.ExtendedAccessToken;
 import org.battlehack.lineapp.api.LineappException;
+import org.battlehack.lineapp.api.Payment;
 import org.battlehack.lineapp.api.Request;
 import org.battlehack.lineapp.api.Response;
 import org.battlehack.lineapp.api.UpdateRequest;
@@ -33,6 +35,8 @@ public class LineappService {
 				return new Response<org.battlehack.lineapp.api.Line>(Line.create(pm, (CreateRequest) request));
 			} else if (request instanceof UpdateRequest) {
 				return new Response<Events>(Line.update(pm, (UpdateRequest) request));
+			} else if (request instanceof CreatePaymentRequest) {
+				return new Response<Payment>(Pay.create(pm, (CreatePaymentRequest) request));
 			}
 			
 			throw new LineappException(new Error(Error.ERROR_INVALID_REQUEST, "invalid request: " +
