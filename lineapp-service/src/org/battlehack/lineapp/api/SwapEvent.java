@@ -15,11 +15,12 @@ public class SwapEvent extends Event {
     /** Default constructor for JSON deserialization. */
     public SwapEvent() {}
     
-    public SwapEvent(Long timestamp, ClientId clientId, List<ClientId> clientIds) {
+    public SwapEvent(Long timestamp, ClientId clientId, List<ClientId> clientIds, String payKey) {
     	super(timestamp);
     	
     	this.clientId = clientId;
     	this.clientIds = clientIds;
+    	this.payKey = payKey;
     }
     
     @Override
@@ -35,7 +36,7 @@ public class SwapEvent extends Event {
     	}
     	return new SwapEvent(timestamp,
     			((clientId != null) ? (ClientId) clientId.clone() : null),
-    			clonedClientIds);
+    			clonedClientIds, payKey);
     }
     
     @JsonInclude(Include.NON_NULL)
@@ -43,6 +44,9 @@ public class SwapEvent extends Event {
     
     @JsonInclude(Include.NON_NULL)
     public List<ClientId> clientIds;
+    
+    @JsonInclude(Include.NON_NULL)
+    public String payKey;
     
 	public void validate() throws LineappException {
 		super.validate();
@@ -57,6 +61,10 @@ public class SwapEvent extends Event {
 		}
 		for (ClientId theClientId : clientIds) {
 			theClientId.validate();
+		}
+		
+		if ((payKey == null) || (payKey.isEmpty())) {
+			throw new LineappException(new Error(Error.ERROR_INVALID_DATA, "invalid payKey"));
 		}
 	}
 }

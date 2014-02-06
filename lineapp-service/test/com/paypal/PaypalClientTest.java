@@ -16,7 +16,7 @@ public class PaypalClientTest {
 			"XXX", "PPP", "SSS");
 
 	@Test
-	public void testEmptyReceivers() throws Exception {
+	public void testCreatePaymentEmptyReceivers() throws Exception {
 		final PaypalClient paypal = new PaypalClient(requestFactory, 10000, 10000, Endpoint.SANDBOX, credentials);
 		final ReceiverList receiverList = new ReceiverList();
 		final PayRequest payRequest = new PayRequest(PayRequest.ACTION_TYPE_PAY, "USD", receiverList,
@@ -24,7 +24,7 @@ public class PaypalClientTest {
 				"https://lineapp-prod.appspot.com/paypal_failure",
 				new RequestEnvelope("en_US", RequestEnvelope.DETAIL_LEVEL_RETURN_ALL));
 		
-		final PayResponse payResponse = paypal.pay(payRequest);
+		final PayResponse payResponse = paypal.createPayment(payRequest);
 		assertNotNull(payResponse.responseEnvelope);
 		assertEquals(ResponseEnvelope.ACK_FAILURE, payResponse.responseEnvelope.ack);
 		assertNull(payResponse.payKey);
@@ -33,7 +33,7 @@ public class PaypalClientTest {
 	}
 	
 	@Test
-	public void testOneReceiver() throws Exception {
+	public void testCreatePaymentOneReceiver() throws Exception {
 		final PaypalClient paypal = new PaypalClient(requestFactory, 10000, 10000, Endpoint.SANDBOX, credentials);
 		final ReceiverList receiverList = new ReceiverList(Collections.singletonList(new Receiver("info@example.com", "10.0")));
 		final PayRequest payRequest = new PayRequest(PayRequest.ACTION_TYPE_PAY, "USD", receiverList,
@@ -41,9 +41,19 @@ public class PaypalClientTest {
 				"https://lineapp-prod.appspot.com/paypal_failure",
 				new RequestEnvelope("en_US", RequestEnvelope.DETAIL_LEVEL_RETURN_ALL));
 		
-		final PayResponse payResponse = paypal.pay(payRequest);
+		final PayResponse payResponse = paypal.createPayment(payRequest);
 		assertNotNull(payResponse.responseEnvelope);
 		assertEquals(ResponseEnvelope.ACK_SUCCESS, payResponse.responseEnvelope.ack);
 		assertNotNull(payResponse.payKey);
+	}
+	
+	@Test
+	public void testGetPaymentDetailsUnpaid() throws Exception {
+		final PaypalClient paypal = new PaypalClient(requestFactory, 10000, 10000, Endpoint.SANDBOX, credentials);
+		
+		final PayDetailsResponse payDetailsResponse = paypal.getPaymentDetails(new PayDetailsRequest(
+				"AP-33A82014HK902244N",
+				new RequestEnvelope("en_US", RequestEnvelope.DETAIL_LEVEL_RETURN_ALL)));
+		assertEquals(PayDetailsResponse.STATUS_CREATED, payDetailsResponse.status);
 	}
 }

@@ -19,7 +19,7 @@ public class PaypalClient {
 	private final Credentials credentials;
 	
 	public static enum Endpoint {
-		SANDBOX("https://svcs.sandbox.paypal.com/AdaptivePayments/Pay");
+		SANDBOX("https://svcs.sandbox.paypal.com/AdaptivePayments/");
 		
 		public String url;
 		
@@ -37,9 +37,9 @@ public class PaypalClient {
 		this.credentials = credentials;
 	}
 	
-	public PayResponse pay(PayRequest payRequest) throws IOException {
+	public PayResponse createPayment(PayRequest payRequest) throws IOException {
 		final HttpRequest request = requestFactory.buildPostRequest(
-				new GenericUrl(endpoint.url),
+				new GenericUrl(endpoint.url + "Pay"),
 				new ByteArrayContent("application/json", Json.bytify(payRequest)));
 		if (connectTimeout != null) {
 			request.setConnectTimeout(connectTimeout);
@@ -59,6 +59,36 @@ public class PaypalClient {
 		final HttpResponse response = request.execute();
 		try {
 			return Json.parse(response.getContent(), new TypeReference<PayResponse>() {});
+		} finally {
+			response.ignore();
+		}
+	}
+	
+	public PayDetailsResponse getPaymentDetails(PayDetailsRequest payRequest) throws IOException {
+		final HttpRequest request = requestFactory.buildPostRequest(
+				new GenericUrl(endpoint.url + "PaymentDetails"),
+				new ByteArrayContent("application/json", Json.bytify(payRequest)));
+		if (connectTimeout != null) {
+			request.setConnectTimeout(connectTimeout);
+		}
+		if (readTimeout != null) {
+			request.setReadTimeout(readTimeout);
+		}
+		
+		request.getHeaders().setAccept("application/json");
+		request.getHeaders().set("X-PAYPAL-APPLICATION-ID", credentials.appId);
+		request.getHeaders().set("X-PAYPAL-SECURITY-USERID", credentials.userId);
+		request.getHeaders().set("X-PAYPAL-SECURITY-PASSWORD", credentials.password);
+		request.getHeaders().set("X-PAYPAL-SECURITY-SIGNATURE", credentials.signature);
+		request.getHeaders().set("X-PAYPAL-REQUEST-DATA-FORMAT", "JSON");
+		request.getHeaders().set("X-PAYPAL-RESPONSE-DATA-FORMAT", "JSON");
+		
+		final HttpResponse response = request.execute();
+		try {
+//			final BufferedReader br = new BufferedReader(new InputStreamReader(response.getContent(), "UTF-8"));
+//			System.out.println(br.readLine());
+//			return null;
+			return Json.parse(response.getContent(), new TypeReference<PayDetailsResponse>() {});
 		} finally {
 			response.ignore();
 		}
