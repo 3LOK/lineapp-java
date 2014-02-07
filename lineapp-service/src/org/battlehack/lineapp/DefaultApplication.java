@@ -1,6 +1,8 @@
 package org.battlehack.lineapp;
 
 import org.battlehack.lineapp.resource.LineappResource;
+import org.battlehack.lineapp.resource.PaypalErrorResource;
+import org.battlehack.lineapp.resource.PaypalSuccessResource;
 import org.battlehack.lineapp.restlet.AccessControlAllowOriginFilter;
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -13,6 +15,8 @@ public class DefaultApplication extends Application {
 		final Router router = new Router(getContext());
 		
 		router.attach("/v1.0", LineappResource.class);
+		router.attach("/paypal/success/{payInternalId}", PaypalSuccessResource.class);
+		router.attach("/paypal/error/{payInternalId}", PaypalErrorResource.class);
 		
 		// Force HTTPS
 		final Filter forceHttpsFilter = new ForceHttpsFilter();

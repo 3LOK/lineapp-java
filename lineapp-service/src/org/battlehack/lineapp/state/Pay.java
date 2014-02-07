@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.jdo.PersistenceManager;
 
 import org.battlehack.lineapp.api.CreatePaymentRequest;
 import org.battlehack.lineapp.api.Error;
+import org.battlehack.lineapp.api.GetPaymentStatusRequest;
 import org.battlehack.lineapp.api.LineappException;
 import org.battlehack.lineapp.api.Payment;
 import org.battlehack.lineapp.api.PaymentRequest;
+import org.battlehack.lineapp.api.PaymentStatus;
 import org.battlehack.lineapp.environment.Http;
 
 import com.paypal.Credentials;
@@ -46,8 +49,13 @@ public class Pay {
 			receiverList.receiver.add(new Receiver(paymentRequest.destination,
 					Double.toString(paymentRequest.amount.doubleValue() / 100)));
 		}
+		
+		final String payInternalId = UUID.randomUUID().toString();
+		
 		final PayRequest payRequest = new PayRequest(PayRequest.ACTION_TYPE_PAY, request.paymentRequests.get(0).currency,
-				receiverList, request.successUrl, request.errorUrl, 
+				receiverList,
+				"https://lineapp-prod.appspot.com/paypal/success/" + payInternalId,
+				"https://lineapp-prod.appspot.com/paypal/error/" + payInternalId,
 				new RequestEnvelope("en_US", RequestEnvelope.DETAIL_LEVEL_RETURN_ALL));
 		
 		final PayResponse payResponse;
@@ -60,7 +68,15 @@ public class Pay {
 			throw new LineappException(new Error(Error.ERROR_INTERNAL, "paypal ack: " + payResponse.responseEnvelope.ack));
 		}
 		
+		pm.makePersistent(new org.battlehack.lineapp.persistent.PaymentStatus(payInternalId, payResponse.payKey));
+		
 		return new Payment(payResponse.payKey);
+	}
+	
+	public static PaymentStatus getStatus(PersistenceManager pm, GetPaymentStatusRequest request) throws LineappException {
+		request.validate();
+		
+		return new PaymentStatus(request.payKey, org.battlehack.lineapp.persistent.PaymentStatus.queryStatus(pm, request.payKey));
 	}
 	
 	public static void validatePaymentDone(String sender, List<PaymentRequest> paymentRequests, String payKey) throws LineappException {

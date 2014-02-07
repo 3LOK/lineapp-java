@@ -8,8 +8,10 @@ import org.battlehack.lineapp.api.Error;
 import org.battlehack.lineapp.api.Events;
 import org.battlehack.lineapp.api.ExtendRequest;
 import org.battlehack.lineapp.api.ExtendedAccessToken;
+import org.battlehack.lineapp.api.GetPaymentStatusRequest;
 import org.battlehack.lineapp.api.LineappException;
 import org.battlehack.lineapp.api.Payment;
+import org.battlehack.lineapp.api.PaymentStatus;
 import org.battlehack.lineapp.api.Request;
 import org.battlehack.lineapp.api.Response;
 import org.battlehack.lineapp.api.UpdateRequest;
@@ -37,6 +39,8 @@ public class LineappService {
 				return new Response<Events>(Line.update(pm, (UpdateRequest) request));
 			} else if (request instanceof CreatePaymentRequest) {
 				return new Response<Payment>(Pay.create(pm, (CreatePaymentRequest) request));
+			} else if (request instanceof GetPaymentStatusRequest) {
+				return new Response<PaymentStatus>(Pay.getStatus(pm, (GetPaymentStatusRequest) request));
 			}
 			
 			throw new LineappException(new Error(Error.ERROR_INVALID_REQUEST, "invalid request: " +

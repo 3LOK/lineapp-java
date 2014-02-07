@@ -16,7 +16,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 	@Type(value = ExtendRequest.class, name = ExtendRequest.TYPE),
 	@Type(value = CreateRequest.class, name = CreateRequest.TYPE),
 	@Type(value = UpdateRequest.class, name = UpdateRequest.TYPE),
-	@Type(value = CreatePaymentRequest.class, name = CreatePaymentRequest.TYPE)
+	@Type(value = CreatePaymentRequest.class, name = CreatePaymentRequest.TYPE),
+	@Type(value = GetPaymentStatusRequest.class, name = GetPaymentStatusRequest.TYPE)
 })
 public abstract class Request implements Serializable {
     private static final long serialVersionUID = 1L;
